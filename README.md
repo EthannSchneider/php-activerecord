@@ -102,7 +102,9 @@ $post = Post::find_by_name_and_id('The Bridge Builder',100);
 $post = Post::find_by_name_or_id('The Bridge Builder',100);
 
 # find with conditions
-$posts = Post::all()->where('name=? or id > ?','The Bridge Builder',100);
+foreach(Post::all()->where('name=? or id > ?','The Bridge Builder',100) as $post) {
+    echo $post->name;
+};
 ```
 
 ### Create ###
