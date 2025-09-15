@@ -360,6 +360,28 @@ class RelationshipTest extends DatabaseTestCase
         $this->assertInstanceOf(Worker::class, $workers[0]);
     }
 
+    public function testHasAndBelongsToManyWithExplicitClassNameBothSide()
+    {
+        Task::$has_and_belongs_to_many = [
+            'custom_workers' => [
+                'class_name' => 'Worker',
+                'join_table' => 'tasks_workers'
+            ]
+        ];
+
+        Worker::$has_and_belongs_to_many = [
+            'custom_tasks' => [
+                'class_name' => 'Task',
+                'join_table' => 'tasks_workers'
+            ]
+        ];
+
+        $task = Task::find(1);
+        $workers = $task->custom_workers;
+        $this->assertEquals(1, count($workers));
+        $this->assertInstanceOf(Worker::class, $workers[0]);
+    }
+
     public function testBelongsToCreateAssociation()
     {
         $event = Event::find(5);
