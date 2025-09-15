@@ -53,7 +53,7 @@ class HasAndBelongsToMany extends AbstractRelationship
         $other_table_name = $other_table->table;
         $other_table_primary_key = $other_table->pk[0];
         $rel->where($other_table_name . '.' . $other_table_primary_key . ' = ?', $model->{$model->get_primary_key()});
-        $rel->joins([get_class($model)]);
+        $rel->joins([$this->options['join_table']]);
 
         return $rel->to_a();
     }
@@ -91,6 +91,6 @@ class HasAndBelongsToMany extends AbstractRelationship
 
     public function is_string_this_relationship(string $other): bool
     {
-        return parent::is_string_this_relationship($other) || $other === $this->class_name;
+        return parent::is_string_this_relationship($other) || $other === $this->options['join_table'];
     }
 }
