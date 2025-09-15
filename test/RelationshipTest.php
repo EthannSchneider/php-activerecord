@@ -350,7 +350,8 @@ class RelationshipTest extends DatabaseTestCase
     {
         Task::$has_and_belongs_to_many = [
             'custom_workers' => [
-                'class_name' => 'Worker'
+                'class_name' => 'Worker',
+                'join_table' => 'tasks_workers'
             ]
         ];
 
