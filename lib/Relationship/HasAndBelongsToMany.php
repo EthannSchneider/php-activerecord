@@ -27,7 +27,9 @@ class HasAndBelongsToMany extends AbstractRelationship
     {
         parent::__construct($attribute, $options);
 
-        $this->set_class_name($this->inferred_class_name(Utils::singularize($attribute)));
+        if (!isset($this->class_name)) {
+            $this->set_class_name($this->inferred_class_name(Utils::singularize($attribute)));
+        }
 
         $this->options['association_foreign_key'] ??= Inflector::keyify($this->class_name);
     }
@@ -46,7 +48,7 @@ class HasAndBelongsToMany extends AbstractRelationship
          * @var Relation<TModel>
          */
         $rel = new Relation($this->class_name, [], []);
-        $rel->from($this->attribute_name);
+        $rel->from($this->get_table()->table);
         $other_table = Table::load(get_class($model));
         $other_table_name = $other_table->table;
         $other_table_primary_key = $other_table->pk[0];

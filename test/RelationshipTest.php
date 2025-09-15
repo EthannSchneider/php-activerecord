@@ -346,6 +346,20 @@ class RelationshipTest extends DatabaseTestCase
         $this->assert_sql_includes('INNER JOIN tasks_workers ON (workers.id = tasks_workers.worker_id) INNER JOIN tasks ON tasks.id = tasks_workers.task_id', Table::load(Worker::class)->last_sql);
     }
 
+    public function testHasAndBelongsToManyWithExplicitClassName()
+    {
+        Task::$has_and_belongs_to_many = [
+            'custom_workers' => [
+                'class_name' => 'Worker'
+            ]
+        ];
+
+        $task = Task::find(1);
+        $workers = $task->custom_workers;
+        $this->assertEquals(1, count($workers));
+        $this->assertInstanceOf(Worker::class, $workers[0]);
+    }
+
     public function testBelongsToCreateAssociation()
     {
         $event = Event::find(5);

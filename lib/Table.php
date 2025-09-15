@@ -164,24 +164,20 @@ class Table
             $ret .= $space;
 
             if (false === stripos($value, 'JOIN ')) {
-                if (array_key_exists($value, $this->relationships)) {
-                    $rel = $this->get_relationship($value);
+                $rel = $this->get_relationship($value, true);
 
-                    /**
-                     * PHPStan seems to be getting confused about the usage of a class-string
-                     * as an array string.
-                     *
-                     * @phpstan-ignore-next-line
-                     */
-                    $alias = !empty($existing_tables[$rel->class_name]) ? $value : null;
-                    /* @phpstan-ignore-next-line */
-                    $existing_tables[$rel->class_name] = true;
+                /**
+                 * PHPStan seems to be getting confused about the usage of a class-string
+                 * as an array string.
+                 *
+                 * @phpstan-ignore-next-line
+                 */
+                $alias = !empty($existing_tables[$rel->class_name]) ? $value : null;
+                /* @phpstan-ignore-next-line */
+                $existing_tables[$rel->class_name] = true;
 
-                    /* @phpstan-ignore-next-line */
-                    $ret .= $rel->construct_inner_join_sql($this, false, $alias);
-                } else {
-                    throw new RelationshipException("Relationship named $value has not been declared for class: {$this->class->getName()}");
-                }
+                /* @phpstan-ignore-next-line */
+                $ret .= $rel->construct_inner_join_sql($this, false, $alias);
             } else {
                 $ret .= $value;
             }
@@ -382,8 +378,10 @@ class Table
      */
     public function get_relationship(string $name, bool $strict = false): ?AbstractRelationship
     {
-        if ($this->has_relationship($name)) {
-            return $this->relationships[$name];
+        foreach ($this->relationships as $relationship) {
+            if ($relationship->attribute_name === $name || ($relationship instanceof HasAndBelongsToMany && $relationship->class_name === ucfirst(Utils::singularize($name)))) {
+                return $relationship;
+            }
         }
 
         if ($strict) {
