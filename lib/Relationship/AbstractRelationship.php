@@ -213,6 +213,16 @@ abstract class AbstractRelationship
     }
 
     /**
+     * Checks if the given string matches this relationship's attribute name.
+     *
+     * @param string $other the string to compare with this relationship's attribute name
+     */
+    public function is_string_this_relationship(string $other): bool
+    {
+        return $this->attribute_name === $other;
+    }
+
+    /**
      * Creates a new instance of specified {@link Model} with the attributes pre-loaded.
      *
      * @param Model      $model            The model which holds this association

@@ -379,7 +379,7 @@ class Table
     public function get_relationship(string $name, bool $strict = false): ?AbstractRelationship
     {
         foreach ($this->relationships as $relationship) {
-            if ($relationship->attribute_name === $name || ($relationship instanceof HasAndBelongsToMany && $relationship->class_name === ucfirst(Utils::singularize($name)))) {
+            if ($relationship->is_string_this_relationship($name)) {
                 return $relationship;
             }
         }
